@@ -13,14 +13,16 @@ def create(s=''):
     try:
         global linkVar
         link = linkVar.get()
-        code = QRCode(link)
-        file = asksaveasfile(initialfile = 'Untitled.png',
-                        defaultextension=".png",
-                        filetypes=[("Portable Network Graphics file (PNG)", "*.png")])
-        if file:
-            code.png(file.name, scale=20)
-            file.close()
-            messagebox.showinfo('Success', 'The QRCode Successfully Created.')
+        if link:
+            code = QRCode(link)
+            file = asksaveasfile(initialfile = 'Untitled.png',
+                            defaultextension=".png",
+                            filetypes=[("Portable Network Graphics file (PNG)", "*.png")])
+            if file:
+                code.png(file.name, scale=20)
+                file.close()
+                messagebox.showinfo('Success', 'The QRCode Successfully Created.')
+                linkVar.set('')
     except Exception as e:
         messagebox.showerror('Error', str(e))
 
@@ -29,7 +31,7 @@ lblWelcome = Label(welcomeFrame, text='Type a Link and Give Your QRCode!', font=
 lblLink = Label(inputFrame, text='Your Link: ', font=font)
 entlink = Entry(inputFrame, width=25, font=font, textvariable=linkVar)
 btnCreate = Button(btnFrame, text='Create', font=font, command=create)
-btnClose = Button(btnFrame, text='Close', font=font, command=root.destroy)
+btnClose = Button(btnFrame, text='Close', font=font, command=lambda s='': root.destroy())
 
 lblWelcome.pack()
 lblLink.pack(side='left')
@@ -40,6 +42,9 @@ btnClose.pack(side='right', padx=10)
 welcomeFrame.pack(padx=1, pady=1)
 inputFrame.pack(padx=10, pady=10)
 btnFrame.pack(padx=10, pady=10)
+
+root.bind('<F5>', create)
+root.bind('<Escape>', lambda s='': root.destroy())
 
 root.mainloop()
 
