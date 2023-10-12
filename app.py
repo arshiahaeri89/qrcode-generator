@@ -1,4 +1,5 @@
-from tkinter import Tk, Label, Entry, Button, Frame
+from tkinter import Tk, Label, Entry, Button, Frame, StringVar, messagebox
+from tkinter.filedialog import asksaveasfile
 from pyqrcode import QRCode
 
 root = Tk()
@@ -9,11 +10,24 @@ inputFrame = Frame(root)
 btnFrame = Frame(root)
 
 def create(s=''):
-    print('hi')
+    try:
+        global linkVar
+        link = linkVar.get()
+        code = QRCode(link)
+        file = asksaveasfile(initialfile = 'Untitled.png',
+                        defaultextension=".png",
+                        filetypes=[("Portable Network Graphics file (PNG)", "*.png")])
+        if file:
+            code.png(file.name, scale=20)
+            file.close()
+            messagebox.showinfo('Success', 'The QRCode Successfully Created.')
+    except Exception as e:
+        messagebox.showerror('Error', str(e))
 
+linkVar = StringVar(inputFrame, '')
 lblWelcome = Label(welcomeFrame, text='Type a Link and Give Your QRCode!', font=font)
 lblLink = Label(inputFrame, text='Your Link: ', font=font)
-entlink = Entry(inputFrame, width=25, font=font)
+entlink = Entry(inputFrame, width=25, font=font, textvariable=linkVar)
 btnCreate = Button(btnFrame, text='Create', font=font, command=create)
 btnClose = Button(btnFrame, text='Close', font=font, command=root.destroy)
 
